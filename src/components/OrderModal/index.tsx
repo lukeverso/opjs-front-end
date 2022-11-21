@@ -8,6 +8,9 @@ interface OrderModalProps {
      visible: boolean;
      order: Order | null;
      onClose: () => void;
+     onCancelOrder: () => Promise<void>;
+     loading: boolean;
+     onChangeOrderStatus: () => void;
 }
 
 export function OrderModal(props: OrderModalProps) {
@@ -75,11 +78,29 @@ export function OrderModal(props: OrderModalProps) {
                          </div>
                     </OrderDetails>
                     <Actions>
-                         <button type="button" className="primary">
-                              <span>🧑‍🍳</span>
-                              <strong>Iniciar produção</strong>
-                         </button>
-                         <button type="button" className="secondary">
+                         {props.order.status != 'DONE' && (
+                              <button
+                                   type="button"
+                                   className="primary"
+                                   disabled={props.loading}
+                                   onClick={props.onChangeOrderStatus}
+                              >
+                                   <span>
+                                        {props.order.status === 'WAITING' && '🧑‍🍳'}
+                                        {props.order.status === 'IN_PRODUCTION' && '✅'}
+                                   </span>
+                                   <strong>
+                                        {props.order.status === 'WAITING' && 'Iniciar produção'}
+                                        {props.order.status === 'IN_PRODUCTION' && 'Concluir pedido'}
+                                   </strong>
+                              </button>
+                         )}
+                         <button
+                              type="button"
+                              className="secondary"
+                              onClick={props.onCancelOrder}
+                              disabled={props.loading}
+                         >
                               Cancelar pedido
                          </button>
                     </Actions>
